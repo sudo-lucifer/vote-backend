@@ -1,23 +1,20 @@
 from flask import request, jsonify
 from flask import current_app as app
 
+names = {}
 
-@app.route('/vote', methods=['GET'])
+@app.route('/vote', methods=['POST'])
 def count_vote():
-	# title = request.form.get("title")
-	# content = request.form.get("content")
-	# if (title is None and content is None):
-		# return jsonify(error={"title": "this field is required", "content": "this field is required"}), 400
-	# elif (title is None):
-		# return jsonify(error={"title": "this field is required"}), 400
-	# elif (content is None):
-		# return jsonify(error={"content": "this field is required"}), 400
-	# try:
-		# message = Message(title=title, content=content)
-		# db.session.add(message)
-		# db.session.commit()
-	return jsonify(id="Test"), 200
-	# except Exception:
-		# return jsonify(error="Can not add message to database"), 400
+	input_name = request.form.get("name")
+	if (input_name is None):
+		return jsonify(error={"name": "this field is required"}), 400
+	if input_name in names.keys():
+		names[input_name] += 1
+	else:
+		names[input_name] = 1
+	return jsonify({"name": input_name}), 200
 
-
+@app.route('/tally', methods=['GET'])
+def get_votes():
+	print(names)
+	return jsonify(names), 200
